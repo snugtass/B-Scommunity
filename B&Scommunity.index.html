@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B&Scommunity.com</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://4kwallpapers.com/images/walls/thumbs_3t/22922.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      text-align: center;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    h1 {
+      font-size: 64px;
+      color: #00ffff;
+      text-shadow: 0 0 15px #00ffff;
+      margin-top: 50px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 50px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 20px;
+      width: 250px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .section {
+      margin-top: 30px;
+    }
+
+    .item {
+      background-color: #222;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 10px;
+      width: 80%;
+    }
+
+    .buy-btn {
+      background-color: #00ffff;
+      border: none;
+      color: black;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .error-banner {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #ff4444;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-weight: bold;
+      z-index: 999;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      transition: top 0.5s ease;
+    }
+
+    .error-banner.show {
+      top: 20px;
+    }
+
+    #player-controls {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      padding: 15px;
+      border-radius: 12px;
+      color: #00ffff;
+      text-align: center;
+      z-index: 1000;
+    }
+
+    #player-controls button {
+      background: transparent;
+      border: 1px solid #00ffff;
+      color: #00ffff;
+      margin: 5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #glow-cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: rgba(0, 255, 255, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      transform: translate(-50%, -50%);
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+  <div id="glow-cursor"></div>
+
+  <h1>B&amp;S community</h1>
+
+  <div class="container">
+    <div class="card" onclick="showTab('minecraft')">Minecraft</div>
+    <div class="card" onclick="showTab('fivem')">FiveM</div>
+    <div class="card" onclick="showTab('discord')">Discord</div>
+  </div>
+
+  <div id="minecraft" class="section hidden">
+    <h2>Minecraft</h2>
+    <div class="item">Unbany (10 zł) <button class="buy-btn" onclick="showError()">Kup</button></div>
+    <div class="item">Przedmioty (10 zł) <button class="buy-btn" onclick="showError()">Kup</button></div>
+    <div class="item">Rangi (10 zł) <button class="buy-btn" onclick="showError()">Kup</button></div>
+  </div>
+
+  <div id="fivem" class="section hidden">
+    <h2>FiveM</h2>
+    <div class="item">Unbany (10 zł) <button class="buy-btn" onclick="showError()">Kup</button></div>
+    <div class="item">Limitki (10 zł) – otrzymujesz losową limitkę! <button class="buy-btn" onclick="showError()">Kup</button></div>
+  </div>
+
+  <div id="discord" class="section hidden">
+    <h2>Discord</h2>
+    <div class="item">Unbany (10 zł) <button class="buy-btn" onclick="showError()">Kup</button></div>
+    <div class="item">Rangi (10 zł) <button class="buy-btn" onclick="showError()">Kup</button></div>
+  </div>
+
+  <div id="errorBanner" class="error-banner">Błąd: Produkt niedostępny</div>
+
+  <div id="player-controls">
+    <div id="track-info">Tytuł: --- | Autor: ---</div>
+    <iframe id="ytplayer" width="300" height="180" src="" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+    <br>
+    <button onclick="prevTrack()">⏮</button>
+    <button onclick="nextTrack()">⏭</button>
+  </div>
+
+  <script>
+    const tracks = [
+      { title: "Oki - Jeremy Sochan", author: "Oki", url: "https://www.youtube.com/embed/RspDppBZumA?autoplay=1" },
+      { title: "Sentino - Casablanca", author: "Sentino", url: "https://www.youtube.com/embed/B0B_mQZfeiY?autoplay=1" },
+      { title: "Sentino - Marabella", author: "Sentino", url: "https://www.youtube.com/embed/l9EIYMm2CeQ?autoplay=1" },
+      { title: "OIO - MVP", author: "OIO", url: "https://www.youtube.com/embed/oGRUaRiD-os?autoplay=1" },
+      { title: "SVM!R - NDA", author: "SVM!R", url: "https://www.youtube.com/embed/cDoUILEXwXE?autoplay=1" }
+    ];
+
+    let currentTrack = 0;
+    const ytPlayer = document.getElementById('ytplayer');
+    const trackInfo = document.getElementById('track-info');
+
+    function loadTrack(index) {
+      const track = tracks[index];
+      ytPlayer.src = track.url;
+      trackInfo.innerText = `Tytuł: ${track.title} | Autor: ${track.author}`;
+    }
+
+    function nextTrack() {
+      currentTrack = (currentTrack + 1) % tracks.length;
+      loadTrack(currentTrack);
+    }
+
+    function prevTrack() {
+      currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+      loadTrack(currentTrack);
+    }
+
+    loadTrack(currentTrack);
+
+    function showTab(tabId) {
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.add('hidden');
+      });
+      document.getElementById(tabId).classList.remove('hidden');
+    }
+
+    function showError() {
+      const banner = document.getElementById('errorBanner');
+      banner.classList.add('show');
+      setTimeout(() => {
+        banner.classList.remove('show');
+      }, 6000);
+    }
+
+    const glow = document.getElementById("glow-cursor");
+    document.addEventListener("mousemove", (e) => {
+      glow.style.left = `${e.clientX}px`;
+      glow.style.top = `${e.clientY}px`;
+    });
+  </script>
+</body>
+</html>
